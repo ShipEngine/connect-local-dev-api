@@ -1,12 +1,12 @@
-// import buildAPI from './build-api';
-import express from 'express';
-import { loadApp } from '@shipengine/integration-platform-loader';
-import cors from 'cors';
+import express from "express";
+
+import { loadApp } from "@shipengine/integration-platform-loader";
 
 const app = express();
 
-app.use(cors());
-
+app.get("/", (req, res) => {
+  return res.send("hi");
+});
 // try {
 //   const sdkApp = await loadApp(pathToApp);
 //   buildAPI(sdkApp, app);
