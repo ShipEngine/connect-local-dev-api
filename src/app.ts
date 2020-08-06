@@ -1,12 +1,13 @@
 import express from "express";
 
-import { loadApp } from "@shipengine/integration-platform-loader";
+// import { loadApp } from "@shipengine/integration-platform-loader";
 
 const app = express();
 
 app.get("/", (req, res) => {
   return res.send("hi");
 });
+
 // try {
 //   const sdkApp = await loadApp(pathToApp);
 //   buildAPI(sdkApp, app);

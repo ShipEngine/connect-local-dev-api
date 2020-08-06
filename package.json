@@ -17,6 +17,9 @@
     "url": "https://github.com/ShipEngine/shipengine-integration-platform-local-dev-api/issues"
   },
   "main": "lib/server.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "tsc",
     "bump": "bump --tag --push --all",
@@ -25,7 +28,8 @@
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "release": "npm run upgrade && npm run clean && CI=true react-scripts test && npm run bump",
-    "start": "node lib/server.js 4001",
+    "start": "node lib/start.js",
+    "start:dev": "nodemon",
     "test": "mocha",
     "upgrade": "npm-check -u && npm audit fix"
   },
