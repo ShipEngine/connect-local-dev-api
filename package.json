@@ -26,7 +26,7 @@
     "clean": "shx rm -rf coverage lib",
     "coverage": "nyc npm run test",
     "format": "prettier --write src/**/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/**/*",
     "release": "npm run upgrade && npm run clean && CI=true react-scripts test && npm run bump",
     "start": "node lib/start.js",
     "start:dev": "nodemon",
