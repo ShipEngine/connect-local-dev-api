@@ -13,14 +13,14 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
   server.get("/", getApp);
 
   sdkApp.connect && server.put("/connect", connect);
+  sdkApp.createShipment && server.put("/create-shipment", createShipment);
 
-  // sdkApp.createShipment && sdkApp.put("/createShipment", createShipment);
-  // sdkApp.cancelShipments && sdkApp.put("/cancelShipments", cancelShipments);
-  // sdkApp.rateShipment && sdkApp.put("/rateShipment", rateShipment);
-  // sdkApp.trackShipment && sdkApp.put("/trackShipment", trackShipment);
-  // // sdkApp.createManifest && sdkApp.put("/createManifest", createManifest);
-  // sdkApp.schedulePickup && sdkApp.put("/schedulePickup", schedulePickup);
-  // sdkApp.cancelPickups && sdkApp.put("/cancelPickups", cancelPickups);
+  // sdkApp.cancelShipments && server.put("/cancelShipments", cancelShipments);
+  // sdkApp.rateShipment && server.put("/rateShipment", rateShipment);
+  // sdkApp.trackShipment && server.put("/trackShipment", trackShipment);
+  // // sdkApp.createManifest && server.put("/createManifest", createManifest);
+  // sdkApp.schedulePickup && server.put("/schedulePickup", schedulePickup);
+  // sdkApp.cancelPickups && server.put("/cancelPickups", cancelPickups);
 
   function getApp(_req: Request, res: Response) {
     return res.status(200).json(sdkApp);
@@ -38,19 +38,21 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
     }
   }
 
-  // async function createShipment(req: Request, res: Response) {
-  //   try {
-  //     let { transaction, shipment } = deserialize(req.body);
-  //     shipment = await server.createShipment!(transaction, shipment);
-  //     send(req, res, 200, { transaction, shipment });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  async function createShipment(req: Request, res: Response) {
+    try {
+      let { transaction, shipment } = req.body;
+      shipment = await sdkApp.createShipment!(transaction, shipment);
+      return res.status(200).send({
+        transaction,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 
   // async function cancelShipments(req: Request, res: Response) {
   //   try {
-  //     const { transaction, shipments } = deserialize(req.body);
+  //     const { transaction, shipments } = req.body;
   //     const outcomes = await server.cancelShipments!(
   //       transaction,
   //       shipments,
@@ -63,7 +65,7 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
 
   // async function rateShipment(req: Request, res: Response) {
   //   try {
-  //     const { transaction, shipment } = deserialize(req.body);
+  //     const { transaction, shipment } = req.body;
   //     const rates = await server.rateShipment!(transaction, shipment);
   //     send(req, res, 200, { transaction, rates });
   //   } catch (error) {
@@ -73,7 +75,7 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
 
   // async function trackShipment(req: Request, res: Response) {
   //   try {
-  //     const { transaction, shipment } = deserialize(req.body);
+  //     const { transaction, shipment } = req.body;
   //     const trackingInfo = await server.trackShipment!(
   //       transaction,
   //       shipment,
@@ -86,7 +88,7 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
 
   // async function schedulePickup(req: Request, res: Response) {
   //   try {
-  //     let { transaction, pickup } = deserialize(req.body);
+  //     let { transaction, pickup } = req.body;
   //     pickup = await server.schedulePickup!(transaction, pickup);
   //     send(req, res, 200, { transaction, pickup });
   //   } catch (error) {
@@ -96,7 +98,7 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
 
   // async function cancelPickups(req: Request, res: Response) {
   //   try {
-  //     let { transaction, pickups } = deserialize(req.body);
+  //     let { transaction, pickups } = req.body;
   //     pickups = await server.cancelPickups!(transaction, pickups);
   //     send(req, res, 200, { transaction, pickups });
   //   } catch (error) {
