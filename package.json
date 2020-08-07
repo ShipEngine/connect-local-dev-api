@@ -34,7 +34,8 @@
     "upgrade": "npm-check -u && npm audit fix"
   },
   "dependencies": {
-    "@shipengine/integration-platform-loader": "0.0.35",
+    "@shipengine/integration-platform-loader": "0.0.36",
+    "@shipengine/integration-platform-sdk": "0.0.37",
     "cors": "^2.8.5",
     "express": "^4.17.1"
   },
