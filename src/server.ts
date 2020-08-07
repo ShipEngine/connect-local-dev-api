@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { loadApp } from "@shipengine/integration-platform-loader";
-import { App } from "@shipengine/integration-platform-sdk/lib/internal";
+import { CarrierApp } from "@shipengine/integration-platform-sdk/lib/internal";
 
 import buildAPI from "./build-api";
 import log from "./utils/logger";
@@ -12,7 +12,7 @@ export async function server(port: number, pathToApp: string): Promise<void> {
   app.use(cors());
 
   try {
-    const sdkApp = (await loadApp(pathToApp)) as App;
+    const sdkApp = (await loadApp(pathToApp)) as CarrierApp;
     buildAPI(sdkApp, app);
   } catch (error) {
     // TODO - consider how this should work

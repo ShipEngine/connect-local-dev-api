@@ -2,7 +2,7 @@ import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
 import express from "express";
 import { loadApp } from "@shipengine/integration-platform-loader";
-import { App } from "@shipengine/integration-platform-sdk/lib/internal";
+import { CarrierApp } from "@shipengine/integration-platform-sdk/lib/internal";
 
 import buildAPI from "../../src/build-api";
 
@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 describe("buildAPI", () => {
   it("sets the GET '/' endpoint", async () => {
     const server = express();
-    const app = (await loadApp("test/fixtures/carrier-app")) as App;
+    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierApp;
 
     buildAPI(app, server);
 
@@ -32,18 +32,64 @@ describe("buildAPI", () => {
       });
   });
 
-  it("sets the PUT '/connect' endpoint", async () => {
+  it("sets the PUT '/connect' endpoint and returns 200 when given a valid input", async () => {
     const server = express();
-    const app = (await loadApp("test/fixtures/carrier-app")) as App;
+    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierApp;
 
     buildAPI(app, server);
 
     chai
       .request(server)
       .put("/connect")
+      .send({
+        transaction: {
+          id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+          session: {},
+        },
+        connectionFormData: {
+          email: "jdoe87@example.com",
+          password: "p@$$w0rd",
+          agree_to_eula: true,
+        },
+      })
       .end((_err, res) => {
         expect(res.status).to.equal(200);
-        expect(res.body).to.equal({});
+        expect(res.body).to.eql({
+          transaction: {
+            id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+            session: {
+              email: "jdoe87@example.com",
+              password: "p@$$w0rd",
+              agree_to_eula: true,
+            },
+          },
+        });
+      });
+  });
+
+  it("sets the PUT '/connect' endpoint and returns 400 when given an invalid input", async () => {
+    const server = express();
+    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierApp;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/connect")
+      .send({
+        transaction: {
+          id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+          session: {},
+        },
+        connectionFormData: {
+          email: "jdoe87@example.com",
+          password: "p@$$w0rd",
+          agree_to_eula: false,
+        },
+      })
+      .end((_err, res) => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.haveOwnProperty("code", "ERR_APP_ERROR");
       });
   });
 
@@ -51,7 +97,7 @@ describe("buildAPI", () => {
     const server = express();
     const app = (await loadApp(
       "test/fixtures/carrier-app-without-methods",
-    )) as App;
+    )) as CarrierApp;
 
     buildAPI(app, server);
 
@@ -60,7 +106,7 @@ describe("buildAPI", () => {
       .put("/connect")
       .end((_err, res) => {
         expect(res.status).to.equal(404);
-        expect(res.body).to.equal({});
+        expect(res.body).to.eqls({});
       });
   });
 });
