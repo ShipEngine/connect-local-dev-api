@@ -20,12 +20,12 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000",
+							"raw": "http://localhost:3001",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000"
+							"port": "3001"
 						},
 						"description": "Returns the app definition. All references between objects are inlined, so the response is very large.\n\n> **NOTE:** You can use the `Accept-Language` header to test out the app's localization"
 					},
@@ -115,12 +115,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/create-shipment",
+							"raw": "http://localhost:3001/create-shipment",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"create-shipment"
 							]
@@ -150,12 +150,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/cancel-shipments",
+							"raw": "http://localhost:3001/cancel-shipments",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"cancel-shipments"
 							]
@@ -185,12 +185,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/rate-shipment",
+							"raw": "http://localhost:3001/rate-shipment",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"rate-shipment"
 							]
@@ -220,12 +220,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/track-shipment",
+							"raw": "http://localhost:3001/track-shipment",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"track-shipment"
 							]
@@ -255,12 +255,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/create-manifest",
+							"raw": "http://localhost:3001/create-manifest",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"create-manifest"
 							]
@@ -290,12 +290,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/schedule-pickup",
+							"raw": "http://localhost:3001/schedule-pickup",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"schedule-pickup"
 							]
@@ -325,12 +325,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/cancel-pickups",
+							"raw": "http://localhost:3001/cancel-pickups",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
+							"port": "3001",
 							"path": [
 								"cancel-pickups"
 							]
