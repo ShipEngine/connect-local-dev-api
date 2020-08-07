@@ -175,4 +175,70 @@ describe("buildAPI", () => {
         expect(res.body).to.eqls({});
       });
   });
+
+  xit("sets the PUT '/cancel-shipments' endpoint and returns 200 when given a valid input", async () => {
+    const server = express();
+    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierApp;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/cancel-shipments")
+      .send({
+        transaction: {
+          id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+          session: {},
+        },
+        outcomes: {},
+      })
+      .end((_err, res) => {
+        expect(res.status).to.equal(200);
+        expect(res.body).to.eql({
+          transaction: {
+            id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+            session: {},
+          },
+        });
+      });
+  });
+
+  it("sets the PUT '/cancel-shipments' endpoint and returns 400 when given an invalid input", async () => {
+    const server = express();
+    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierApp;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/cancel-shipments")
+      .send({
+        transaction: {
+          id: "6ad41b24-62a8-4e17-9751-a28d9688e277",
+          session: {},
+        },
+        outcomes: {},
+      })
+      .end((_err, res) => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.haveOwnProperty("code", "ERR_INVALID_INPUT");
+      });
+  });
+
+  it("does not set the PUT '/cancel-shipments' endpoint when connect is not defined", async () => {
+    const server = express();
+    const app = (await loadApp(
+      "test/fixtures/carrier-app-without-methods",
+    )) as CarrierApp;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/cancel-shipments")
+      .end((_err, res) => {
+        expect(res.status).to.equal(404);
+        expect(res.body).to.eqls({});
+      });
+  });
 });
