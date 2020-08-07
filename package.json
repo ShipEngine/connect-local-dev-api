@@ -30,21 +30,25 @@
     "release": "npm run upgrade && npm run clean && CI=true react-scripts test && npm run bump",
     "start": "node lib/start.js",
     "start:dev": "nodemon",
-    "test": "mocha",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "upgrade": "npm-check -u && npm audit fix"
   },
   "dependencies": {
     "@shipengine/integration-platform-loader": "0.0.36",
     "@shipengine/integration-platform-sdk": "0.0.37",
+    "chai": "^4.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1"
   },
   "devDependencies": {
     "@jsdevtools/version-bump-prompt": "^6.0.6",
+    "@types/chai": "^4.2.12",
     "@types/cors": "^2.8.7",
     "@types/eslint": "^7.2.0",
     "@types/express": "^4.17.7",
+    "@types/mocha": "^8.0.1",
     "@typescript-eslint/parser": "^3.8.0",
+    "chai-http": "^4.3.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",

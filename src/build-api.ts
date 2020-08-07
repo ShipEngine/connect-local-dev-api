@@ -1,8 +1,8 @@
 import bodyParser from "body-parser";
 import { Express, Request, Response } from "express";
-import { SdkApp } from "./types";
+import { App } from "@shipengine/integration-platform-sdk/lib/internal";
 
-export default function buildAPI(sdkApp: SdkApp, server: Express) {
+export default function buildAPI(sdkApp: App, server: Express) {
   server.use(bodyParser.urlencoded({ extended: false }));
   server.use(bodyParser.json());
 
