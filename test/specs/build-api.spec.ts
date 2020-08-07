@@ -20,6 +20,15 @@ describe("buildAPI", () => {
       .get("/")
       .end((_err, res) => {
         expect(res.status).to.equal(200);
+        expect(res.body).to.haveOwnProperty("name", "ShipEngine Testing");
+        expect(res.body).to.haveOwnProperty("description", "Another test app!");
+        expect(res.body).to.haveOwnProperty(
+          "websiteURL",
+          "http://www.carier-site.com/",
+        );
+        expect(res.body).to.haveOwnProperty("settingsForm");
+        expect(res.body).to.haveOwnProperty("connectionForm");
+        expect(res.body).to.haveOwnProperty("deliveryServices");
       });
   });
 });
