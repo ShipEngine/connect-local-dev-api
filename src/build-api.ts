@@ -15,12 +15,11 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
   sdkApp.connect && server.put("/connect", connect);
   sdkApp.createShipment && server.put("/create-shipment", createShipment);
   sdkApp.cancelShipments && server.put("/cancel-shipments", cancelShipments);
-
-  // sdkApp.rateShipment && server.put("/rateShipment", rateShipment);
-  // sdkApp.trackShipment && server.put("/trackShipment", trackShipment);
-  // sdkApp.createManifest && server.put("/createManifest", createManifest);
-  // sdkApp.schedulePickup && server.put("/schedulePickup", schedulePickup);
-  // sdkApp.cancelPickups && server.put("/cancelPickups", cancelPickups);
+  sdkApp.rateShipment && server.put("/rate-shipment", rateShipment);
+  sdkApp.trackShipment && server.put("/track-shipment", trackShipment);
+  sdkApp.createManifest && server.put("/create-manifest", createManifest);
+  sdkApp.schedulePickup && server.put("/schedule-pickup", schedulePickup);
+  sdkApp.cancelPickups && server.put("/cancel-pickups", cancelPickups);
 
   function getApp(_req: Request, res: Response) {
     return res.status(200).json(sdkApp);
@@ -64,46 +63,68 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
     }
   }
 
-  // async function rateShipment(req: Request, res: Response) {
-  //   try {
-  //     const { transaction, shipment } = req.body;
-  //     const rates = await sdkApp.rateShipment!(transaction, shipment);
-  //     send(req, res, 200, { transaction, rates });
-  //   } catch (error) {
-  //     return res.status(400).send(error);
-  //   }
-  // }
+  async function rateShipment(req: Request, res: Response) {
+    try {
+      const { transaction, shipment } = req.body;
+      const rates = await sdkApp.rateShipment!(transaction, shipment);
+      return res.status(200).send({
+        transaction,
+        rates,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 
-  // async function trackShipment(req: Request, res: Response) {
-  //   try {
-  //     const { transaction, shipment } = req.body;
-  //     const trackingInfo = await sdkApp.trackShipment!(
-  //       transaction,
-  //       shipment,
-  //     );
-  //     send(req, res, 200, { transaction, trackingInfo });
-  //   } catch (error) {
-  //     return res.status(400).send(error);
-  //   }
-  // }
+  async function trackShipment(req: Request, res: Response) {
+    try {
+      const { transaction, shipment } = req.body;
+      const trackingInfo = await sdkApp.trackShipment!(transaction, shipment);
+      return res.status(200).send({
+        transaction,
+        trackingInfo,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 
-  // async function schedulePickup(req: Request, res: Response) {
-  //   try {
-  //     let { transaction, pickup } = req.body;
-  //     pickup = await sdkApp.schedulePickup!(transaction, pickup);
-  //     send(req, res, 200, { transaction, pickup });
-  //   } catch (error) {
-  //     return res.status(400).send(error);
-  //   }
-  // }
+  async function createManifest(req: Request, res: Response) {
+    try {
+      let { transaction, manifest } = req.body;
+      manifest = await sdkApp.trackShipment!(transaction, manifest);
+      return res.status(200).send({
+        transaction,
+        manifest,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 
-  // async function cancelPickups(req: Request, res: Response) {
-  //   try {
-  //     let { transaction, pickups } = req.body;
-  //     pickups = await sdkApp.cancelPickups!(transaction, pickups);
-  //     send(req, res, 200, { transaction, pickups });
-  //   } catch (error) {
-  //     return res.status(400).send(error);
-  //   }
-  // }
+  async function schedulePickup(req: Request, res: Response) {
+    try {
+      let { transaction, pickup } = req.body;
+      pickup = await sdkApp.schedulePickup!(transaction, pickup);
+      return res.status(200).send({
+        transaction,
+        pickup,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
+  async function cancelPickups(req: Request, res: Response) {
+    try {
+      let { transaction, pickups } = req.body;
+      pickups = await sdkApp.cancelPickups!(transaction, pickups);
+      return res.status(200).send({
+        transaction,
+        pickups,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 }
