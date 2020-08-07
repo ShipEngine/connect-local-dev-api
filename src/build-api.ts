@@ -7,7 +7,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   server.use(bodyParser.json());
 
   server.get("/", getApp);
-  // server.connect && server.put("/connect", connect);
+  server.connect && server.put("/connect", connect);
 
   // server.createShipment && server.put("/createShipment", createShipment);
   // server.cancelShipments && server.put("/cancelShipments", cancelShipments);
@@ -26,15 +26,15 @@ export default function buildAPI(sdkApp: App, server: Express) {
     return res.status(200).json(sdkApp);
   }
 
-  // async function connect(req: Request, res: Response) {
-  //   try {
-  //     const { transaction, connectionFormData } = deserialize(req.body);
-  //     await server.connect!(transaction, connectionFormData);
-  //     send(req, res, 200, { transaction });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  async function connect(req: Request, res: Response) {
+    try {
+      const { transaction, connectionFormData } = req.body;
+      await server.connect!(transaction, connectionFormData);
+      res.status(200).send({ transaction });
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
 
   // async function createShipment(req: Request, res: Response) {
   //   try {

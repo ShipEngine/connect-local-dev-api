@@ -9,7 +9,7 @@ import buildAPI from "../../src/build-api";
 chai.use(chaiHttp);
 
 describe("buildAPI", () => {
-  it("sets the '/' path", async () => {
+  it("sets the GET '/' endpoint", async () => {
     const server = express();
     const app = (await loadApp("test/fixtures/carrier-app")) as App;
 
@@ -29,6 +29,38 @@ describe("buildAPI", () => {
         expect(res.body).to.haveOwnProperty("settingsForm");
         expect(res.body).to.haveOwnProperty("connectionForm");
         expect(res.body).to.haveOwnProperty("deliveryServices");
+      });
+  });
+
+  it("sets the PUT '/connect' endpoint", async () => {
+    const server = express();
+    const app = (await loadApp("test/fixtures/carrier-app")) as App;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/connect")
+      .end((_err, res) => {
+        expect(res.status).to.equal(200);
+        expect(res.body).to.equal({});
+      });
+  });
+
+  it("does not set the PUT '/connect' endpoint when connect is not defined", async () => {
+    const server = express();
+    const app = (await loadApp(
+      "test/fixtures/carrier-app-without-methods",
+    )) as App;
+
+    buildAPI(app, server);
+
+    chai
+      .request(server)
+      .put("/connect")
+      .end((_err, res) => {
+        expect(res.status).to.equal(404);
+        expect(res.body).to.equal({});
       });
   });
 });
