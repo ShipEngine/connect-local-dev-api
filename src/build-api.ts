@@ -132,6 +132,7 @@ export default function buildAPI(sdkApp: CarrierApp, server: Express) {
 
   function logRequest(req: Request, _res: Response, next: NextFunction) {
     log(`${req.method} ${req.url}`);
+    log(req.body);
     next();
   }
 }
