@@ -26,7 +26,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
     return res.status(200).json(sdkApp);
   }
 
-  // async function connect(req, res) {
+  // async function connect(req: Request, res: Response) {
   //   try {
   //     const { transaction, connectionFormData } = deserialize(req.body);
   //     await server.connect!(transaction, connectionFormData);
@@ -36,7 +36,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function createShipment(req, res) {
+  // async function createShipment(req: Request, res: Response) {
   //   try {
   //     let { transaction, shipment } = deserialize(req.body);
   //     shipment = await server.createShipment!(transaction, shipment);
@@ -46,7 +46,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function cancelShipments(req, res) {
+  // async function cancelShipments(req: Request, res: Response) {
   //   try {
   //     const { transaction, shipments } = deserialize(req.body);
   //     const outcomes = await server.cancelShipments!(
@@ -59,7 +59,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function rateShipment(req, res) {
+  // async function rateShipment(req: Request, res: Response) {
   //   try {
   //     const { transaction, shipment } = deserialize(req.body);
   //     const rates = await server.rateShipment!(transaction, shipment);
@@ -69,7 +69,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function trackShipment(req, res) {
+  // async function trackShipment(req: Request, res: Response) {
   //   try {
   //     const { transaction, shipment } = deserialize(req.body);
   //     const trackingInfo = await server.trackShipment!(
@@ -82,7 +82,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function schedulePickup(req, res) {
+  // async function schedulePickup(req: Request, res: Response) {
   //   try {
   //     let { transaction, pickup } = deserialize(req.body);
   //     pickup = await server.schedulePickup!(transaction, pickup);
@@ -92,7 +92,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function cancelPickups(req, res) {
+  // async function cancelPickups(req: Request, res: Response) {
   //   try {
   //     let { transaction, pickups } = deserialize(req.body);
   //     pickups = await server.cancelPickups!(transaction, pickups);
@@ -102,7 +102,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function getSeller(req, res) {
+  // async function getSeller(req: Request, res: Response) {
   //   try {
   //     let { transaction, seller } = deserialize(req.body);
   //     seller = await app.getSeller(transaction, seller);
@@ -112,7 +112,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function getSalesOrder(req, res) {
+  // async function getSalesOrder(req: Request, res: Response) {
   //   try {
   //     let { transaction, salesOrder } = deserialize(req.body);
   //     salesOrder = await app.getSalesOrder(transaction, salesOrder);
@@ -122,7 +122,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function getSalesOrdersByDate(req, res) {
+  // async function getSalesOrdersByDate(req: Request, res: Response) {
   //   try {
   //     const { transaction, range } = deserialize(req.body);
   //     const iterable = app.getSalesOrdersByDate(transaction, range);
@@ -138,7 +138,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function shipmentCreated(req, res) {
+  // async function shipmentCreated(req: Request, res: Response) {
   //   try {
   //     const { transaction, shipment } = deserialize(req.body);
   //     await app.shipmentCreated(transaction, shipment);
@@ -148,7 +148,7 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // async function shipmentCancelled(req, res) {
+  // async function shipmentCancelled(req: Request, res: Response) {
   //   try {
   //     const { transaction, shipment } = deserialize(req.body);
   //     await app.shipmentCancelled(transaction, shipment);
@@ -158,12 +158,12 @@ export default function buildAPI(sdkApp: App, server: Express) {
   //   }
   // }
 
-  // function logRequest(req, res) {
+  // function logRequest(req: Request, res: Response) {
   //   console.log(`${req.method} ${req.url}`);
   //   next();
   // }
 
-  // function onNoMatch(req, res) {
+  // function onNoMatch(req: Request, res: Response) {
   //   send(req, res, 404, {
   //     error: `${app.name} does not implement ${req.path}`,
   //   });
