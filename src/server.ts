@@ -5,6 +5,7 @@ import { CarrierApp } from "@shipengine/connect-sdk/lib/internal";
 import { Request, Response, NextFunction } from "express";
 import buildAPI from "./build-api";
 import log from "./utils/logger";
+import { App } from "./types";
 
 export default async function server(
   port: number,
@@ -24,10 +25,10 @@ export default async function server(
   });
 
   let startMessage = "";
-  let sdkApp: CarrierApp;
+  let sdkApp: App;
 
   try {
-    sdkApp = (await loadApp(pathToApp)) as CarrierApp;
+    sdkApp = (await loadApp(pathToApp)) as App;
     buildAPI(sdkApp, server, port);
     server.use(express.static(pathToApp));
     startMessage = `${sdkApp.name} is now running at http://localhost:${port}`;

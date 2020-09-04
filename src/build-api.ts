@@ -1,7 +1,9 @@
 import bodyParser from "body-parser";
 import { Express, Request, Response, NextFunction } from "express";
-import { CarrierApp } from "@shipengine/connect-sdk/lib/internal";
+import { CarrierApp, OrderApp } from "@shipengine/connect-sdk/lib/internal";
+import { AppType } from "@shipengine/connect-sdk";
 import log from "./utils/logger";
+import { App } from "./types";
 
 interface SdkError {
   message: string;
@@ -12,23 +14,30 @@ interface SdkError {
   stack: string;
 }
 
-export default function buildAPI(
-  sdkApp: CarrierApp,
-  server: Express,
-  port: number,
-) {
-  server.use(
-    bodyParser.urlencoded({
-      extended: false,
-    }),
-  );
-  server.use(bodyParser.json());
+function logRequest(req: Request, _res: Response, next: NextFunction) {
+  log.info(`${req.method} ${req.url}`);
+  log.body(req.body);
+  next();
+}
 
-  server.get("/", getApp);
+function buildImageUrl(pathToImage: string, port: number) {
+  const fileName = pathToImage.split("/").pop();
 
-  server.use(logRequest);
+  return `http://localhost:${port}/${fileName}`;
+}
 
-  sdkApp.connect && server.put("/connect", connect);
+function formatError(error: SdkError) {
+  return {
+    name: error.name,
+    message: error.message,
+    code: error.code,
+    details: error.details || [],
+    originalCode: error.originalCode,
+    stack: error.stack,
+  };
+}
+
+function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
   sdkApp.createShipment && server.put("/create-shipment", createShipment);
   sdkApp.cancelShipments && server.put("/cancel-shipments", cancelShipments);
   sdkApp.rateShipment && server.put("/rate-shipment", rateShipment);
@@ -36,29 +45,6 @@ export default function buildAPI(
   sdkApp.createManifest && server.put("/create-manifest", createManifest);
   sdkApp.schedulePickup && server.put("/schedule-pickup", schedulePickup);
   sdkApp.cancelPickups && server.put("/cancel-pickups", cancelPickups);
-
-  function getApp(_req: Request, res: Response) {
-    const sdkAppWithLogos = {
-      ...sdkApp,
-      ...{
-        logo: buildImageUrl(sdkApp.logo, port),
-        icon: buildImageUrl(sdkApp.icon, port),
-      },
-    };
-    return res.status(200).json(sdkAppWithLogos);
-  }
-
-  async function connect(req: Request, res: Response) {
-    try {
-      const { transaction, connectionFormData } = req.body;
-      await sdkApp.connect!(transaction, connectionFormData);
-      return res.status(200).send({
-        transaction,
-      });
-    } catch (error) {
-      return res.status(400).send(formatError(error));
-    }
-  }
 
   async function createShipment(req: Request, res: Response) {
     try {
@@ -150,27 +136,54 @@ export default function buildAPI(
       return res.status(400).send(formatError(error));
     }
   }
+}
 
-  function logRequest(req: Request, _res: Response, next: NextFunction) {
-    log.info(`${req.method} ${req.url}`);
-    log.body(req.body);
-    next();
-  }
+function buildOrderAppApi(sdkApp: OrderApp, server: Express) {
+  // TODO
+}
 
-  function buildImageUrl(pathToImage: string, port: number) {
-    const fileName = pathToImage.split("/").pop();
+export default function buildAPI(sdkApp: App, server: Express, port: number) {
+  server.use(
+    bodyParser.urlencoded({
+      extended: false,
+    }),
+  );
 
-    return `http://localhost:${port}/${fileName}`;
-  }
+  server.use(bodyParser.json());
 
-  function formatError(error: SdkError) {
-    return {
-      name: error.name,
-      message: error.message,
-      code: error.code,
-      details: error.details || [],
-      originalCode: error.originalCode,
-      stack: error.stack,
+  // We are intentionally not logging this request
+  server.get("/", getApp);
+
+  server.use(logRequest);
+
+  sdkApp.connect && server.put("/connect", connect);
+
+  if (sdkApp.type === AppType.Carrier)
+    buildCarrierAppApi(sdkApp as CarrierApp, server);
+
+  if (sdkApp.type === AppType.Order)
+    buildOrderAppApi(sdkApp as OrderApp, server);
+
+  function getApp(_req: Request, res: Response) {
+    const sdkAppWithLogos = {
+      ...sdkApp,
+      ...{
+        logo: buildImageUrl(sdkApp.logo, port),
+        icon: buildImageUrl(sdkApp.icon, port),
+      },
     };
+    return res.status(200).json(sdkAppWithLogos);
+  }
+
+  async function connect(req: Request, res: Response) {
+    try {
+      const { transaction, connectionFormData } = req.body;
+      await sdkApp.connect!(transaction, connectionFormData);
+      return res.status(200).send({
+        transaction,
+      });
+    } catch (error) {
+      return res.status(400).send(formatError(error));
+    }
   }
 }
