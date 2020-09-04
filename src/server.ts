@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { loadApp } from "@shipengine/connect-loader";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import buildAPI from "./build-api";
 import log from "./utils/logger";
 import { SdkApp } from "./types";
@@ -26,20 +26,21 @@ export default async function server(
   let sdkApp: SdkApp;
 
   try {
-    const app = (await loadApp(pathToApp)) as SdkApp;
+    sdkApp = (await loadApp(pathToApp)) as unknown as SdkApp;
 
     buildAPI(sdkApp, server, port);
     server.use(express.static(pathToApp));
     startMessage = `${sdkApp.name} is now running at http://localhost:${port}`;
   } catch (error) {
+    const err = error as Error;
     appState.status = "down";
-    appState.error = error;
+    appState.error = err;
     startMessage =
       "App failed to load! Please fix the validation issues above.";
-    log.error(error.message);
+    log.error(err.message);
   }
 
-  server.use(function (req: Request, res: Response, _next: NextFunction) {
+  server.use(function (req: Request, res: Response) {
     const errorMessage = sdkApp
       ? `${sdkApp.name} does not implement ${req.path}`
       : `Endpoint ${req.path} not found`;

@@ -1,14 +1,64 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import bodyParser from "body-parser";
 import { Express, Request, Response, NextFunction } from "express";
 import {
   CarrierApp,
   ConnectionApp,
+  NewManifestPOJO,
+  NewShipmentPOJO,
   OrderApp,
+  PickupCancellationPOJO,
+  PickupRequestPOJO,
+  RateCriteriaPOJO,
+  ShipmentCancellationPOJO,
+  TrackingCriteriaPOJO,
 } from "@shipengine/connect-sdk/lib/internal";
 import { AppType } from "@shipengine/connect-sdk";
+import { TransactionPOJO } from "@shipengine/connect-sdk/lib/internal";
 import log from "./utils/logger";
 
 type App = CarrierApp | OrderApp | ConnectionApp;
+
+interface ConnectArgs {
+  transaction: TransactionPOJO;
+  connectionFormData: Record<string, unknown>;
+}
+
+interface CreateShipmentArgs {
+  transaction: TransactionPOJO;
+  shipment: NewShipmentPOJO;
+}
+
+interface CancelShipmentsArgs {
+  transaction: TransactionPOJO;
+  shipments: ShipmentCancellationPOJO[];
+}
+
+interface RateShipmentArgs {
+  transaction: TransactionPOJO;
+  shipment: RateCriteriaPOJO;
+}
+
+interface TrackShipmentArgs {
+  transaction: TransactionPOJO;
+  shipment: TrackingCriteriaPOJO;
+}
+
+interface CreateManifestArgs {
+  transaction: TransactionPOJO;
+  manifest: NewManifestPOJO;
+}
+
+interface SchedulePickupArgs {
+  transaction: TransactionPOJO;
+  pickup: PickupRequestPOJO;
+}
+
+interface CancelPickupsArgs {
+  transaction: TransactionPOJO;
+  pickups: PickupCancellationPOJO[];
+}
 
 interface SdkError {
   message: string;
@@ -25,10 +75,12 @@ function logRequest(req: Request, _res: Response, next: NextFunction) {
   next();
 }
 
-function buildImageUrl(pathToImage: string, port: number) {
+function buildImageUrl(pathToImage: string, port: number): string | undefined {
   const fileName = pathToImage.split("/").pop();
 
-  return `http://localhost:${port}/${fileName}`;
+  if (fileName) {
+    return `http://localhost:${port}/${fileName}`;
+  }
 }
 
 function formatError(error: SdkError) {
@@ -53,11 +105,11 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function createShipment(req: Request, res: Response) {
     try {
-      let { transaction, shipment } = req.body;
-      shipment = await sdkApp.createShipment!(transaction, shipment);
+      const { transaction, shipment } = req.body as CreateShipmentArgs;
+      const shipmentResponse = await sdkApp.createShipment!(transaction, shipment);
       return res.status(200).send({
         transaction,
-        shipment,
+        shipmentResponse,
       });
     } catch (error) {
       return res.status(400).send(formatError(error));
@@ -66,7 +118,7 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function cancelShipments(req: Request, res: Response) {
     try {
-      const { transaction, shipments } = req.body;
+      const { transaction, shipments } = req.body as CancelShipmentsArgs;
       const outcomes = await sdkApp.cancelShipments!(transaction, shipments);
       return res.status(200).send({
         transaction,
@@ -79,7 +131,7 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function rateShipment(req: Request, res: Response) {
     try {
-      const { transaction, shipment } = req.body;
+      const { transaction, shipment } = req.body as RateShipmentArgs;
       const rates = await sdkApp.rateShipment!(transaction, shipment);
       return res.status(200).send({
         transaction,
@@ -92,7 +144,7 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function trackShipment(req: Request, res: Response) {
     try {
-      const { transaction, shipment } = req.body;
+      const { transaction, shipment } = req.body as TrackShipmentArgs;
       const trackingInfo = await sdkApp.trackShipment!(transaction, shipment);
       return res.status(200).send({
         transaction,
@@ -105,11 +157,11 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function createManifest(req: Request, res: Response) {
     try {
-      let { transaction, manifest } = req.body;
-      manifest = await sdkApp.createManifest!(transaction, manifest);
+      const { transaction, manifest } = req.body as CreateManifestArgs;
+      const manifestResponse = await sdkApp.createManifest!(transaction, manifest);
       return res.status(200).send({
         transaction,
-        manifest,
+        manifestResponse,
       });
     } catch (error) {
       return res.status(400).send(formatError(error));
@@ -118,11 +170,11 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function schedulePickup(req: Request, res: Response) {
     try {
-      let { transaction, pickup } = req.body;
-      pickup = await sdkApp.schedulePickup!(transaction, pickup);
+      const { transaction, pickup } = req.body as SchedulePickupArgs;
+      const pickupResponse = await sdkApp.schedulePickup!(transaction, pickup);
       return res.status(200).send({
         transaction,
-        pickup,
+        pickupResponse,
       });
     } catch (error) {
       return res.status(400).send(formatError(error));
@@ -131,11 +183,11 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 
   async function cancelPickups(req: Request, res: Response) {
     try {
-      let { transaction, pickups } = req.body;
-      pickups = await sdkApp.cancelPickups!(transaction, pickups);
+      const { transaction, pickups } = req.body as CancelPickupsArgs;
+      const pickupsResponse = await sdkApp.cancelPickups!(transaction, pickups);
       return res.status(200).send({
         transaction,
-        pickups,
+        pickupsResponse,
       });
     } catch (error) {
       return res.status(400).send(formatError(error));
@@ -143,11 +195,11 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
   }
 }
 
-function buildOrderAppApi(sdkApp: OrderApp, server: Express) {
-  // TODO
-}
+// function buildOrderAppApi(sdkApp: OrderApp, server: Express) {
+//   // TODO
+// }
 
-export default function buildAPI(sdkApp: App, server: Express, port: number) {
+export default function buildAPI(sdkApp: App, server: Express, port: number): void {
   server.use(
     bodyParser.urlencoded({
       extended: false,
@@ -166,8 +218,8 @@ export default function buildAPI(sdkApp: App, server: Express, port: number) {
   if (sdkApp.type === AppType.Carrier)
     buildCarrierAppApi(sdkApp as CarrierApp, server);
 
-  if (sdkApp.type === AppType.Order)
-    buildOrderAppApi(sdkApp as OrderApp, server);
+  // if (sdkApp.type === AppType.Order)
+  //   buildOrderAppApi(sdkApp as OrderApp, server);
 
   function getApp(_req: Request, res: Response) {
     const sdkAppWithLogos = {
@@ -182,7 +234,7 @@ export default function buildAPI(sdkApp: App, server: Express, port: number) {
 
   async function connect(req: Request, res: Response) {
     try {
-      const { transaction, connectionFormData } = req.body;
+      const { transaction, connectionFormData } = req.body as ConnectArgs;
       await sdkApp.connect!(transaction, connectionFormData);
       return res.status(200).send({
         transaction,
