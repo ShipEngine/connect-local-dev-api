@@ -34,7 +34,7 @@
     "upgrade": "npm-check -u && npm audit fix"
   },
   "dependencies": {
-    "@shipengine/connect-loader": "2.0.1",
+    "@shipengine/connect-loader": "^2.0.1",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@jsdevtools/version-bump-prompt": "^6.1.0",
-    "@shipengine/connect-sdk": "3.0.2",
+    "@shipengine/connect-sdk": "^3.0.2",
     "@types/chai": "^4.2.12",
     "@types/cors": "^2.8.7",
     "@types/eslint": "^7.2.2",
