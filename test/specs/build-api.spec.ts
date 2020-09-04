@@ -2,7 +2,7 @@ import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
 import express from "express";
 import { loadApp } from "@shipengine/connect-loader";
-import { App } from "@shipengine/connect-sdk/lib/internal";
+import { AppPOJO } from "@shipengine/connect-sdk/lib/internal";
 
 import logger from "../../src/utils/logger";
 import buildAPI from "../../src/build-api";
@@ -38,7 +38,7 @@ describe("buildAPI", () => {
 
   it("sets the PUT '/connect' endpoint and returns 200 when given a valid input", async () => {
     const server = express();
-    const app = (await loadApp("test/fixtures/carrier-app")) as CarrierAppDefinition;
+    const app = (await loadApp("test/fixtures/carrier-app")) as AppPOJO;
 
     buildAPI(app, server, 3000);
 

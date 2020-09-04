@@ -1,3 +1,13 @@
-import { CarrierApp, OrderApp } from "@shipengine/connect-sdk/lib/internal";
+import { OrderApp, CarrierApp } from "@shipengine/connect-sdk/lib/internal";
 
-export type App = CarrierApp | OrderApp;
+import { AppType } from "@shipengine/connect-sdk";
+
+export type SdkApp = CarrierApp | OrderApp;
+
+export type SdkAppTypes = AppType.Carrier | AppType.Order;
+
+export interface ConnectApp {
+  id: string;
+  name: string;
+  type: "carrier";
+}

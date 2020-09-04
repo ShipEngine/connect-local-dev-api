@@ -1,9 +1,14 @@
 import bodyParser from "body-parser";
 import { Express, Request, Response, NextFunction } from "express";
-import { CarrierApp, OrderApp } from "@shipengine/connect-sdk/lib/internal";
+import {
+  CarrierApp,
+  ConnectionApp,
+  OrderApp,
+} from "@shipengine/connect-sdk/lib/internal";
 import { AppType } from "@shipengine/connect-sdk";
 import log from "./utils/logger";
-import { App } from "./types";
+
+type App = CarrierApp | OrderApp | ConnectionApp;
 
 interface SdkError {
   message: string;

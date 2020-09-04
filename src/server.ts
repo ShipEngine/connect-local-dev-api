@@ -1,12 +1,10 @@
 import express from "express";
 import cors from "cors";
 import { loadApp } from "@shipengine/connect-loader";
-import { CarrierApp } from "@shipengine/connect-sdk/lib/internal";
 import { Request, Response, NextFunction } from "express";
 import buildAPI from "./build-api";
 import log from "./utils/logger";
-import { App } from "./types";
-
+import { SdkApp } from "./types";
 export default async function server(
   port: number,
   pathToApp: string,
@@ -25,10 +23,11 @@ export default async function server(
   });
 
   let startMessage = "";
-  let sdkApp: App;
+  let sdkApp: SdkApp;
 
   try {
-    sdkApp = (await loadApp(pathToApp)) as App;
+    const app = (await loadApp(pathToApp)) as SdkApp;
+
     buildAPI(sdkApp, server, port);
     server.use(express.static(pathToApp));
     startMessage = `${sdkApp.name} is now running at http://localhost:${port}`;
