@@ -12,7 +12,7 @@ import {
   PickupRequestPOJO,
   RateCriteriaPOJO,
   SalesOrderNotification,
-  SalesOrderShipment,
+  SalesOrderShipmentPOJO,
   SalesOrderTimeRange,
   ShipmentCancellationPOJO,
   TrackingCriteriaPOJO,
@@ -70,7 +70,7 @@ interface GetSalesOrdersByDateArgs {
 
 interface ShipmentCreatedArgs {
   transaction: TransactionPOJO;
-  shipment: SalesOrderShipment;
+  shipment: SalesOrderShipmentPOJO;
 }
 
 interface AcknowledgeOrdersArgs {
@@ -214,7 +214,7 @@ function buildCarrierAppApi(sdkApp: CarrierApp, server: Express) {
 }
 
 function buildOrderAppApi(sdkApp: OrderApp, server: Express) {
-  sdkApp.getSalesOrdersByDate && server.get("/sales-orders-by-date", getSalesOrdersByDate);
+  sdkApp.getSalesOrdersByDate && server.put("/get-sales-orders-by-date", getSalesOrdersByDate);
   sdkApp.shipmentCreated && server.put("/shipment-created", shipmentCreated);
   sdkApp.acknowledgeOrders && server.put("/acknowledge-orders", acknowledgeOrders);
 
